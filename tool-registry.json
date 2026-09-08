@@ -1,0 +1,22 @@
+{
+  "schema": "AbelEngineering.ToolRegistry",
+  "schemaVersion": "1.0",
+  "tools": [
+    {
+      "id": "downtime-tracker",
+      "manifest": "https://rabel-626.github.io/Downtime-Tracker/tool-manifest.json"
+    },
+    {
+      "id": "cycle-time-labor-study",
+      "manifest": "https://rabel-626.github.io/Cycle-Time-Labor-Study/tool-manifest.json"
+    },
+    {
+      "id": "multi-study-downtime-totalizer",
+      "manifest": "https://rabel-626.github.io/Downtime-Tracker-Multi-Study-Totalizer/tool-manifest.json"
+    },
+    {
+      "id": "material-flow-takt-planner",
+      "manifest": "https://rabel-626.github.io/Material-Flow-Takt-Planner/tool-manifest.json"
+    }
+  ]
+}

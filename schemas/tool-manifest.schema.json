@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Abel Engineering Tool Manifest",
+  "type": "object",
+  "required": [
+    "schema",
+    "schemaVersion",
+    "tool",
+    "links",
+    "documents"
+  ],
+  "properties": {
+    "schema": {
+      "const": "AbelEngineering.ToolManifest"
+    },
+    "schemaVersion": {
+      "type": "string"
+    },
+    "tool": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "shortName",
+        "category",
+        "status",
+        "description"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "shortName": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "object",
+      "required": [
+        "application",
+        "repository"
+      ],
+      "properties": {
+        "application": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string"
+        }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "title",
+          "file",
+          "description",
+          "order"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

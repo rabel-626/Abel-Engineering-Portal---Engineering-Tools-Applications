@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tool Information | Abel Engineering</title>
+<link rel="icon" type="image/png" href="assets/favicon.png"><link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html" aria-label="Abel Engineering home">
+      <img src="assets/abel-mark.png" alt="Abel Engineering icon">
+      <div class="brand-text">
+        <strong>ABEL ENGINEERING</strong>
+        <span>ENGINEERING TOOLS &amp; APPLICATIONS</span>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a class="active" href="index.html">Tools</a>
+<a class="" href="documentation.html">Documentation</a>
+<a class="" href="about.html">About</a>
+      <a class="github" href="https://github.com/rabel-626" target="_blank" rel="noopener noreferrer">
+        <img class="github-icon" src="assets/github-mark.png" alt="">GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell">
+  <section class="hero">
+    <div class="hero-inner">
+      <p id="eyebrow" class="eyebrow">Tool Information</p>
+      <h1 id="title"><span class="title-gradient">Loading Tool</span></h1>
+      <p id="description">Loading tool manifest…</p>
+      <div id="heroActions" class="hero-actions"></div>
+    </div>
+  </section>
+  <div class="mpg-rule"></div>
+
+  <section id="metaPanel" class="panel"><div class="info-grid" id="meta"></div></section>
+
+  <div class="section-head"><div><h2>Capabilities</h2><p>High-level functions registered by this tool.</p></div></div>
+  <section class="panel"><div id="features" class="tags"></div></section>
+
+  <div class="mpg-rule"></div>
+
+  <div class="section-head"><div><h2>Supporting Documentation</h2><p>These files live with the tool and are loaded from its manifest.</p></div></div>
+  <section id="docs" class="doc-list"></section>
+  <div id="error" class="empty" hidden></div>
+</main>
+
+<footer class="footer">
+  <div class="shell footer-inner">
+    <div class="footer-brand">
+      <img src="assets/abel-mark.png" alt="">
+      <div><strong>Abel Engineering</strong><br><span>Engineering Tools & Applications</span></div>
+    </div>
+    <div>© <span data-current-year></span> Abel Engineering</div>
+    <a class="github-small" href="https://github.com/rabel-626" target="_blank" rel="noopener noreferrer">
+      <img src="assets/github-mark.png" alt=""> GitHub Profile
+    </a>
+  </div>
+</footer>
+
+<script src="assets/common.js"></script>
+<script>
+(async function(){
+  try {
+    const id=AE.query().get("tool");
+    if(!id) throw new Error("No tool was specified.");
+    const {manifest}=await AE.findTool(id);
+    const t=manifest.tool,l=manifest.links;
+    document.title=`${t.name} | Abel Engineering`;
+    document.getElementById("eyebrow").textContent=t.category;
+    document.getElementById("title").innerHTML=`<span class="title-gradient">${AE.esc(t.name)}</span>`;
+    document.getElementById("description").textContent=t.description;
+    document.getElementById("heroActions").innerHTML=`
+      <a class="btn primary" href="${AE.esc(l.application)}">Open Tool ↗</a>
+      <a class="btn ghost" href="${AE.esc(l.repository)}" target="_blank" rel="noopener noreferrer"><img src="assets/github-mark.png" alt="">Repository</a>`;
+    document.getElementById("meta").innerHTML=[
+      ["Status",t.status],["Version",t.version||"—"],["Category",t.category],["Tool ID",t.id]
+    ].map(x=>`<div class="info-cell"><span>${AE.esc(x[0])}</span><strong>${AE.esc(x[1])}</strong></div>`).join("");
+    document.getElementById("features").innerHTML=(t.features||[]).map(x=>`<span class="tag">${AE.esc(x)}</span>`).join("");
+    document.getElementById("docs").innerHTML=(manifest.documents||[]).sort((a,b)=>a.order-b.order).map(d=>`
+      <article class="doc-card">
+        <div><span class="doc-type">${AE.esc(d.type.replaceAll("-"," "))}</span><h3>${AE.esc(d.title)}</h3><p>${AE.esc(d.description)}</p></div>
+        <div class="actions"><a class="btn secondary" href="${AE.docHref(t.id,d.id)}">View Document</a></div>
+      </article>`).join("") || '<div class="empty">No documentation is registered for this tool.</div>';
+  } catch(err) {
+    const e=document.getElementById("error");e.hidden=false;e.textContent=err.message;
+  }
+})();
+</script>
+</body></html>

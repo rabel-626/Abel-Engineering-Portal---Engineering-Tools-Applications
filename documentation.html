@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Documentation | Abel Engineering</title>
+<link rel="icon" type="image/png" href="assets/favicon.png"><link rel="stylesheet" href="assets/site.css"></head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html" aria-label="Abel Engineering home">
+      <img src="assets/abel-mark.png" alt="Abel Engineering icon">
+      <div class="brand-text">
+        <strong>ABEL ENGINEERING</strong>
+        <span>ENGINEERING TOOLS &amp; APPLICATIONS</span>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a class="" href="index.html">Tools</a>
+<a class="active" href="documentation.html">Documentation</a>
+<a class="" href="about.html">About</a>
+      <a class="github" href="https://github.com/rabel-626" target="_blank" rel="noopener noreferrer">
+        <img class="github-icon" src="assets/github-mark.png" alt="">GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell">
+<section class="hero"><div class="hero-inner">
+<p class="eyebrow">Abel Engineering</p>
+<h1><span class="title-gradient">Documentation</span></h1>
+<p>Quick starts, work instructions, engineering references, limitations, and data-handling notes are loaded from each tool repository manifest.</p>
+</div></section>
+<div class="mpg-rule"></div>
+<section class="toolbar">
+  <input id="search" type="search" placeholder="Search documentation or tool names...">
+  <select id="type">
+    <option value="">All Document Types</option>
+    <option value="quick-start">Quick Start</option>
+    <option value="work-instruction">Work Instructions</option>
+    <option value="reference">Engineering Reference</option>
+    <option value="limitations">Limitations</option>
+    <option value="data">Data & Privacy</option>
+  </select>
+  <select id="tool"><option value="">All Tools</option></select>
+</section>
+<div class="section-head"><div><h2>Document Library</h2><p id="docCount">Loading documentation…</p></div></div>
+<section id="docs" class="doc-list"></section>
+<div id="error" class="empty" hidden></div>
+</main>
+
+<footer class="footer">
+  <div class="shell footer-inner">
+    <div class="footer-brand">
+      <img src="assets/abel-mark.png" alt="">
+      <div><strong>Abel Engineering</strong><br><span>Engineering Tools & Applications</span></div>
+    </div>
+    <div>© <span data-current-year></span> Abel Engineering</div>
+    <a class="github-small" href="https://github.com/rabel-626" target="_blank" rel="noopener noreferrer">
+      <img src="assets/github-mark.png" alt=""> GitHub Profile
+    </a>
+  </div>
+</footer>
+
+<script src="assets/common.js"></script>
+<script>
+(async function(){
+  const search=document.getElementById("search"),type=document.getElementById("type"),tool=document.getElementById("tool"),docs=document.getElementById("docs");
+  let rows=[];
+  function render(){
+    const q=search.value.trim().toLowerCase(),ty=type.value,ti=tool.value;
+    const list=rows.filter(r=>{
+      const hay=[r.tool.name,r.tool.category,r.doc.title,r.doc.description,r.doc.type].join(" ").toLowerCase();
+      return(!q||hay.includes(q))&&(!ty||r.doc.type===ty)&&(!ti||r.tool.id===ti);
+    });
+    document.getElementById("docCount").textContent=`${list.length} document${list.length===1?"":"s"}`;
+    docs.innerHTML=list.map(r=>`<article class="doc-card">
+      <div><span class="doc-type">${AE.esc(r.tool.name)} • ${AE.esc(r.doc.type.replaceAll("-"," "))}</span>
+      <h3>${AE.esc(r.doc.title)}</h3><p>${AE.esc(r.doc.description)}</p></div>
+      <div class="actions">
+        <a class="btn secondary" href="${AE.docHref(r.tool.id,r.doc.id)}">View</a>
+        <a class="btn ghost" href="${AE.toolHref(r.tool.id)}">Tool Information</a>
+      </div></article>`).join("")||'<div class="empty">No documents match the current filters.</div>';
+  }
+  try{
+    const data=await AE.loadAll();
+    data.items.filter(x=>x.manifest).forEach(x=>{
+      const t=x.manifest.tool;
+      tool.insertAdjacentHTML("beforeend",`<option value="${AE.esc(t.id)}">${AE.esc(t.name)}</option>`);
+      (x.manifest.documents||[]).forEach(d=>rows.push({tool:t,doc:d}));
+    });
+    rows.sort((a,b)=>a.tool.name.localeCompare(b.tool.name)||a.doc.order-b.doc.order);
+    search.addEventListener("input",render);type.addEventListener("change",render);tool.addEventListener("change",render);render();
+  }catch(err){const e=document.getElementById("error");e.hidden=false;e.textContent=err.message;}
+})();
+</script>
+</body></html>

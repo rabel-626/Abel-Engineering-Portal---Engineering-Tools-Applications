@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Document | Abel Engineering</title>
+<link rel="icon" type="image/png" href="assets/favicon.png"><link rel="stylesheet" href="assets/site.css"></head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html" aria-label="Abel Engineering home">
+      <img src="assets/abel-mark.png" alt="Abel Engineering icon">
+      <div class="brand-text">
+        <strong>ABEL ENGINEERING</strong>
+        <span>ENGINEERING TOOLS &amp; APPLICATIONS</span>
+      </div>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a class="" href="index.html">Tools</a>
+<a class="active" href="documentation.html">Documentation</a>
+<a class="" href="about.html">About</a>
+      <a class="github" href="https://github.com/rabel-626" target="_blank" rel="noopener noreferrer">
+        <img class="github-icon" src="assets/github-mark.png" alt="">GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="shell">
+<section class="hero"><div class="hero-inner">
+<p id="eyebrow" class="eyebrow">Documentation</p>
+<h1 id="title"><span class="title-gradient">Loading Document</span></h1>
+<p id="description">Loading supporting documentation…</p>
+<div id="actions" class="hero-actions"></div>
+</div></section>
+<div class="mpg-rule"></div>
+<section class="panel">
+  <div id="docMeta" class="info-grid" style="margin-bottom:18px"></div>
+  <article id="content" class="markdown"><p>Loading…</p></article>
+</section>
+<div id="error" class="empty" hidden></div>
+</main>
+
+<footer class="footer">
+  <div class="shell footer-inner">
+    <div class="footer-brand">
+      <img src="assets/abel-mark.png" alt="">
+      <div><strong>Abel Engineering</strong><br><span>Engineering Tools & Applications</span></div>
+    </div>
+    <div>© <span data-current-year></span> Abel Engineering</div>
+    <a class="github-small" href="https://github.com/rabel-626" target="_blank" rel="noopener noreferrer">
+      <img src="assets/github-mark.png" alt=""> GitHub Profile
+    </a>
+  </div>
+</footer>
+
+<script src="assets/common.js"></script>
+<script>
+(async function(){
+  try{
+    const q=AE.query(),toolId=q.get("tool"),docId=q.get("doc");
+    if(!toolId||!docId)throw new Error("Tool or document identifier is missing.");
+    const {manifest}=await AE.findTool(toolId);
+    const d=(manifest.documents||[]).find(x=>x.id===docId);
+    if(!d)throw new Error(`Document "${docId}" is not registered for this tool.`);
+    const path=AE.resolveDocPath(manifest,d);
+    const r=await fetch(path,{cache:"no-store"});
+    if(!r.ok)throw new Error(`Could not load ${path} (${r.status}).`);
+    const md=await r.text(),t=manifest.tool;
+    document.title=`${d.title} | Abel Engineering`;
+    document.getElementById("eyebrow").textContent=`${t.name} • ${d.type.replaceAll("-"," ")}`;
+    document.getElementById("title").innerHTML=`<span class="title-gradient">${AE.esc(d.title)}</span>`;
+    document.getElementById("description").textContent=d.description;
+    document.getElementById("actions").innerHTML=`
+      <a class="btn primary" href="${AE.esc(manifest.links.application)}">Open Tool ↗</a>
+      <a class="btn secondary" href="${AE.toolHref(t.id)}">Tool Information</a>
+      <a class="btn ghost" href="documentation.html">All Documentation</a>`;
+    document.getElementById("docMeta").innerHTML=[
+      ["Document ID",d.id],["Tool",t.name],["Type",d.type],["Source File",d.file]
+    ].map(x=>`<div class="info-cell"><span>${AE.esc(x[0])}</span><strong>${AE.esc(x[1])}</strong></div>`).join("");
+    document.getElementById("content").innerHTML=AE.renderMarkdown(md);
+  }catch(err){document.getElementById("content").innerHTML="";const e=document.getElementById("error");e.hidden=false;e.textContent=err.message;}
+})();
+</script>
+</body></html>
