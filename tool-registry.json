@@ -17,6 +17,10 @@
     {
       "id": "material-flow-takt-planner",
       "manifest": "https://rabel-626.github.io/Material-Flow-Takt-Planner/tool-manifest.json"
+    },
+    {
+      "id": "excel-lookup-formula-builder",
+      "manifest": "https://rabel-626.github.io/Excel-Lookup-Formula-Builder/tool-manifest.json"
     }
   ]
 }
